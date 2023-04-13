@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT em Python</title>
+    <meta charset="utf-8">
+    <style>
+        #messages {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #input-box {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+    <input type="text" id="input-box" placeholder="Digite sua mensagem e pressione Enter">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#input-box').keypress(function(event) {
+                if (event.keyCode === 13) {
+                    var message = $(this).val();
+                    $(this).val('');
+                    $.ajax({
+                        url: '/send_message',
+                        type: 'POST',
+                        data: { message: message },
+                        success: function(response) {
+                            appendMessage(response, 'ChatGPT');
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+        });
+
+        function appendMessage(message, sender) {
+            var div = document.createElement('div');
+            div.innerText = sender + ': ' + message;
+            $('#messages').append(div);
+            $('#messages').scrollTop($('#messages')[0].scrollHeight);
+        }
+    </script>
+</body>
+</html>
